@@ -1,7 +1,7 @@
 import re
 import copy
 from PyQt5.QtCore import pyqtSignal, QObject
-from dependencies.signals import sNexus
+from RainyCore.signals import sNexus
 import math
 
 xp_dict = {

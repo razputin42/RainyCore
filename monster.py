@@ -115,13 +115,15 @@ class Monster (QObject):
                     self.type = ",".join(temp_list[:-1]).strip()
                     if 'swarm' in self.type.lower():
                         self.type = 'Swarm'
-                    self.source = temp_list[-1]
+                    self.source = [temp_list[-1]]
                     if "(" in self.type:
                         subtype_raw = self.type[self.type.find("(") + 1:self.type.find(")")]
                         subtype_list = subtype_raw.split(", ")
                         self.subtype = []
                         for subtype in subtype_list:
                             self.subtype.append(subtype.strip())
+                elif attr.tag == "source":
+                    self.source = [attr.text]
                 else:
                     setattr(self, attr.tag, attr.text)
             if hasattr(self, 'cr') and self.cr is not None:
@@ -206,6 +208,12 @@ class Monster (QObject):
 
     def performAttack(self, attack):
         sNexus.attackSignal.emit(self.name, attack.attack)
+
+    def append_source(self, source):
+        self.source.append(source)
+
+    def __str__(self):
+        return "Monster"
 
 
 class Monster35(Monster):

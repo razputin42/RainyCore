@@ -56,11 +56,16 @@ class Item:
             elif attr.tag == "name" and " GP - " in attr.text:
                 self.name = attr.text.split(" GP - ")[1]
             elif attr.tag == "value":
+                if attr.text is None:
+                    self.value = None
+                    continue
                 conversion = [("cp", 0.01), ("sp", 0.1), ("gp", 1), ("pp", 10), ("ep", 100)]
                 for denoter, factor in conversion:
                     if denoter in attr.text:
                         self.value = float(attr.text.strip(denoter)) * factor
                         break
+            elif attr.tag == "source":
+                self.source = [attr.text]
             else:
                 setattr(self, attr.tag, attr.text)
         self.text = s
@@ -70,6 +75,13 @@ class Item:
 
     def copy(self):
         return copy.deepcopy(self)
+
+    def append_source(self, source):
+        self.source.append(source)
+
+    def __str__(self):
+        return "Item"
+
 
 class Item35(Item):
     of_list = ['Scroll', 'Wand']

@@ -33,9 +33,10 @@ class Spell:
                     self.school = school_dict[attr.text]
                 else:
                     self.school = attr.text
-
             elif attr.tag == 'classes':
                 self.classes = attr.text.split(', ')
+            elif attr.tag == 'source':
+                self.source = [attr.text]
             else:
                 setattr(self, attr.tag, attr.text)
         self.text = s
@@ -45,6 +46,17 @@ class Spell:
 
     def copy(self):
         return copy.deepcopy(self)
+
+    def append_source(self, source):
+        self.source.append(source)
+
+    def append_classes(self, entry):
+        for cls in entry.classes:
+            if cls not in self.classes:
+                self.classes.append(cls)
+
+    def __str__(self):
+        return "Spell"
 
 class Spell35(Spell):
     def __init__(self, entry, idx):

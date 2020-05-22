@@ -1,10 +1,9 @@
 import copy
-
-
+import re
 
 
 class Item:
-    required_database_fields = ['name']
+    required_database_fields = ['name', 'rarity']
     database_fields = ['name', 'type', 'magic', 'value', 'weight', 'ac', 'strength', 'stealth', 'text']
     damage_type_dict = dict(
         P="Piercing",
@@ -66,6 +65,9 @@ class Item:
                         break
             elif attr.tag == "source":
                 self.source = [attr.text]
+            elif attr.tag == "detail":  # new database has rarirty listed as detail, for some unknown reason
+                print(attr.text, self.name)
+                self.rarity = re.sub(" \(requires attunement\)$", "", attr.text.capitalize())
             else:
                 setattr(self, attr.tag, attr.text)
         self.text = s

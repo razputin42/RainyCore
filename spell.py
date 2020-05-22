@@ -56,12 +56,10 @@ class Spell:
                 self.classes.append(cls)
 
     def append_spell(self, entry):
-        print("HERE")
         attr_list = ["level", "school", "ritual", "time", "range", "components",
                      "duration", "text"]
         for attr in attr_list:
             if not hasattr(self, attr) and hasattr(entry, attr):
-                print(attr)
                 setattr(self, attr, getattr(entry, attr))
         self.append_classes(entry)
 

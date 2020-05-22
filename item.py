@@ -38,6 +38,7 @@ class Item:
     def __init__(self, entry, idx):
         self.entry = entry
         self.index = idx
+        self.rarity = "N/A"
         s = ""
         for attr in entry:
             if attr.tag == "magic":
@@ -66,8 +67,7 @@ class Item:
             elif attr.tag == "source":
                 self.source = [attr.text]
             elif attr.tag == "detail":  # new database has rarirty listed as detail, for some unknown reason
-                print(attr.text, self.name)
-                self.rarity = re.sub(" \(requires attunement\)$", "", attr.text.capitalize())
+                self.rarity = re.sub("(, cursed)? \(.*\)$", "", attr.text.capitalize())
             else:
                 setattr(self, attr.tag, attr.text)
         self.text = s

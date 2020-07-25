@@ -81,7 +81,10 @@ class Monster (QObject):
             self.text = s
 
         def __str__(self):
-            return self.name + ": " + self.text
+            if self.name is None:
+                return self.text
+            else:
+                return self.name + ": " + self.text
 
     class Trait(Action):
         pass

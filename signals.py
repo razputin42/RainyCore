@@ -7,9 +7,12 @@ class SignalNexus(QObject):
     printSignal = pyqtSignal(str, name="printSignal")
     setWidgetStretch = pyqtSignal(int, int, name="setWidgetStretch")
 
-    # Toolbox and encounter widget signals
+    # Bookmark and encounter widget signals
     addSpellsSignal = pyqtSignal(list, name="addSpellsSignal")
     addMonstersToEncounter = pyqtSignal(QObject, int, name="addMonstersToEncounter")
+
+    # Select signals
+    viewerSelectChanged = pyqtSignal(int, name="viewerSelectChanged")
 
     # Deselect signals
     encounterDeselectSignal = pyqtSignal(name="encounterDeselctSignal")

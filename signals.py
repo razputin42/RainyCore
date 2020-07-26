@@ -11,6 +11,9 @@ class SignalNexus(QObject):
     addSpellsSignal = pyqtSignal(list, name="addSpellsSignal")
     addMonstersToEncounter = pyqtSignal(QObject, int, name="addMonstersToEncounter")
 
+    # Select signals
+    viewerSelectChanged = pyqtSignal(int, name="viewerSelectChanged")
+
     # Deselect signals
     encounterDeselectSignal = pyqtSignal(name="encounterDeselctSignal")
     treasureHoardDeselectSignal = pyqtSignal(name="treasureHoardDeselectSignal")

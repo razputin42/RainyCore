@@ -115,7 +115,7 @@ class Monster (QObject):
                         self.size = attr.text
                 elif attr.tag == "type" and attr.text is not None and ',' in attr.text:
                     temp_list = attr.text.split(",")
-                    self.type = ",".join(temp_list[:-1]).strip()
+                    self.type = ",".join(temp_list[:-1]).strip().lower()
                     if 'swarm' in self.type.lower():
                         self.type = 'Swarm'
                     self.source = [temp_list[-1]]

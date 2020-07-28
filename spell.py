@@ -18,7 +18,7 @@ class Spell:
         'name', 'level', 'school', 'time', 'range', 'components', 'duration', 'text'
     ]
 
-    def __init__(self, entry, idx):
+    def __init__(self, entry, idx, srd_list):
         self.entry = entry
         self.index = idx
         s = ""
@@ -40,6 +40,7 @@ class Spell:
             else:
                 setattr(self, attr.tag, attr.text)
         self.text = s
+        self.srd_valid = srd_list is None or self.name in srd_list
 
     def __str__(self):
         return self.name

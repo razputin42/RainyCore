@@ -35,7 +35,7 @@ class Item:
         "1": "Yes"
     }
 
-    def __init__(self, entry, idx):
+    def __init__(self, entry, idx, srd_list):
         self.entry = entry
         self.index = idx
         self.rarity = "N/A"
@@ -71,6 +71,7 @@ class Item:
             else:
                 setattr(self, attr.tag, attr.text)
         self.text = s
+        self.srd_valid = srd_list is None or self.name in srd_list
 
     def __str__(self):
         return self.name

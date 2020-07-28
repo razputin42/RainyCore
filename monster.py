@@ -62,6 +62,7 @@ class Monster (QObject):
     required_database_fields = ['name',
                                 'str', 'dex', 'con', 'int', 'wis', 'cha',
                                 ]
+    valid = None
 
     class Action:
         database_fields = ['name', 'text', 'attack']
@@ -89,7 +90,7 @@ class Monster (QObject):
     class Trait(Action):
         pass
 
-    def __init__(self, entry, idx):
+    def __init__(self, entry, idx, srd_list):
         super().__init__()
         self.entry = entry
         self.index = idx
@@ -137,6 +138,7 @@ class Monster (QObject):
                 self.initiative = self.calculate_modifier(self.dex)
             if hasattr(self, 'hp') and self.hp is not None:
                 self.hp_no_dice, self.HD = self.extract_hp(self.hp)
+            self.srd_valid = srd_list is None or self.name in srd_list
         else:
             self.name = ""
             self.size = ""
@@ -153,6 +155,7 @@ class Monster (QObject):
             self.cha = 0
             self.cr = ""
             self.xp = 0
+            self.srd_valid = True
 
     @staticmethod
     def extract_hp(hp):

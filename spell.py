@@ -40,7 +40,7 @@ class Spell:
             else:
                 setattr(self, attr.tag, attr.text)
         self.text = s
-        self.srd_valid = srd_list is None or self.name in srd_list
+        self.srd_valid = "yes" if srd_list is None or self.name in srd_list else "no"
 
     def __str__(self):
         return self.name

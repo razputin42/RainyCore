@@ -138,7 +138,13 @@ class Monster (QObject):
                 self.initiative = self.calculate_modifier(self.dex)
             if hasattr(self, 'hp') and self.hp is not None:
                 self.hp_no_dice, self.HD = self.extract_hp(self.hp)
-            self.srd_valid = srd_list is None or self.name in srd_list
+            if srd_list is None or self.name in srd_list:
+                self.srd = "yes"
+            else:
+                self.srd = "no"
+            self.srd_bool = self.srd == "yes"
+
+            # self.srd_valid = "yes" if srd_list is None or self.name in srd_list else "no"
         else:
             self.name = ""
             self.size = ""
@@ -155,7 +161,7 @@ class Monster (QObject):
             self.cha = 0
             self.cr = ""
             self.xp = 0
-            self.srd_valid = True
+            self.srd = "yes"
 
     @staticmethod
     def extract_hp(hp):

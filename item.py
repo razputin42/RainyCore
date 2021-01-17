@@ -71,7 +71,11 @@ class Item:
             else:
                 setattr(self, attr.tag, attr.text)
         self.text = s
-        self.srd_valid = "yes" if srd_list is None or self.name in srd_list else "no"
+        if srd_list is None or self.name in srd_list:
+            self.srd = "yes"
+        else:
+            self.srd = "no"
+        self.srd_bool = self.srd == "yes"
 
     def __str__(self):
         return self.name

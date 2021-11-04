@@ -50,7 +50,7 @@ class Item:
                 if attr.text is None:
                     s = s + "<br>"
                 else:
-                    s = s + attr.text + "<br>"
+                    s = s + attr.text.replace("\n", "<br>")
             elif attr.tag == "type" and attr.text in self.type_dict.keys():
                 self.type = self.type_dict[attr.text]
             elif attr.tag == "name" and " GP - " in attr.text:
@@ -59,11 +59,7 @@ class Item:
                 if attr.text is None:
                     self.value = None
                     continue
-                conversion = [("cp", 0.01), ("sp", 0.1), ("gp", 1), ("pp", 10), ("ep", 100)]
-                for denoter, factor in conversion:
-                    if denoter in attr.text:
-                        self.value = float(attr.text.strip(denoter)) * factor
-                        break
+                self.value = self.value_conversion(attr.text)
             elif attr.tag == "source":
                 self.source = [attr.text]
             elif attr.tag == "detail":  # new database has rarirty listed as detail, for some unknown reason
@@ -71,23 +67,26 @@ class Item:
             else:
                 setattr(self, attr.tag, attr.text)
         self.text = s
-        if srd_list is None or self.name in srd_list:
-            self.srd = "yes"
-        else:
-            self.srd = "no"
-        self.srd_bool = self.srd == "yes"
+        self.__srd_valid = srd_list is None or self.name in srd_list
 
     def __str__(self):
         return self.name
+
+    def value_conversion(self, value):
+        conversion = [("cp", 0.01), ("sp", 0.1), ("gp", 1), ("pp", 10), ("ep", 100)]
+        for denoter, factor in conversion:
+            if denoter in value:
+                self.value = float(value.strip(denoter)) * factor
+                break
+
+    def is_srd_valid(self):
+        return self.__srd_valid
 
     def copy(self):
         return copy.deepcopy(self)
 
     def append_source(self, source):
         self.source.append(source)
-
-    def __str__(self):
-        return "Item"
 
 
 class Item35(Item):
@@ -101,3 +100,7 @@ class Item35(Item):
                 self.name = attr.text + ' of ' + self.name
             else:
                 setattr(self, attr.tag, attr.text)
+
+class ItemSW5e(Item):
+    def value_conversion(self, value):
+        return float(value)

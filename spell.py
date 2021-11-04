@@ -1,6 +1,5 @@
 import copy
 
-
 school_dict = dict(
     A="Abjuration",
     C="Conjuration",
@@ -12,8 +11,9 @@ school_dict = dict(
     EN="Enchantment"
 )
 
+
 class Spell:
-    required_database_fields = ["name"]
+    required_database_fields = ["name", "level"]
     database_fields = [
         'name', 'level', 'school', 'time', 'range', 'components', 'duration', 'text'
     ]
@@ -40,11 +40,10 @@ class Spell:
             else:
                 setattr(self, attr.tag, attr.text)
         self.text = s
-        if srd_list is None or self.name in srd_list:
-            self.srd = "yes"
-        else:
-            self.srd = "no"
-        self.srd_bool = self.srd == "yes"
+        self.__srd_valid = srd_list is None or self.name in srd_list
+
+    def is_srd_valid(self):
+        return self.__srd_valid
 
     def __str__(self):
         return self.name
@@ -68,8 +67,6 @@ class Spell:
                 setattr(self, attr, getattr(entry, attr))
         self.append_classes(entry)
 
-    def __str__(self):
-        return "Spell"
 
 class Spell35(Spell):
     def __init__(self, entry, idx):
@@ -81,3 +78,12 @@ class Spell35(Spell):
             else:
                 setattr(self, attr.tag, attr.text)
 
+
+class SpellSW5e(Spell):
+    level = 0  # cantrips are not listed with levels, default is 0
+
+    def is_srd_valid(self):
+        return True
+
+    def __eq__(self, other):
+        print(other)

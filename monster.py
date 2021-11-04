@@ -1,7 +1,7 @@
 import re
 import copy
 from PyQt5.QtCore import pyqtSignal, QObject
-from RainyCore.signals import sNexus
+from .signals import sNexus
 import math
 
 xp_dict = {
@@ -53,16 +53,13 @@ size_dict = dict(
 )
 
 
-class Monster (QObject):
+class Monster(QObject):
     database_fields = [
         'name', 'size', 'type', 'alignment', 'ac', 'hp', 'speed',
         ['str', 'dex', 'con', 'int', 'wis', 'cha'],
         'save', 'resist', 'immune', 'conditionImmune', 'skill', 'senses', 'languages', 'passive', 'cr', 'spells'
     ]
-    required_database_fields = ['name',
-                                'str', 'dex', 'con', 'int', 'wis', 'cha',
-                                ]
-    valid = None
+    required_database_fields = ['name', 'str', 'dex', 'con', 'int', 'wis', 'cha']
 
     class Action:
         database_fields = ['name', 'text', 'attack']
@@ -90,8 +87,9 @@ class Monster (QObject):
     class Trait(Action):
         pass
 
-    def __init__(self, entry, idx, srd_list):
+    def __init__(self, entry, idx, srd_list=None):
         super().__init__()
+        self.source = []
         self.entry = entry
         self.index = idx
         self.action_list = []
@@ -138,13 +136,8 @@ class Monster (QObject):
                 self.initiative = self.calculate_modifier(self.dex)
             if hasattr(self, 'hp') and self.hp is not None:
                 self.hp_no_dice, self.HD = self.extract_hp(self.hp)
-            if srd_list is None or self.name in srd_list:
-                self.srd = "yes"
-            else:
-                self.srd = "no"
-            self.srd_bool = self.srd == "yes"
 
-            # self.srd_valid = "yes" if srd_list is None or self.name in srd_list else "no"
+            self.__srd_valid = srd_list is None or self.name in srd_list
         else:
             self.name = ""
             self.size = ""
@@ -161,17 +154,17 @@ class Monster (QObject):
             self.cha = 0
             self.cr = ""
             self.xp = 0
-            self.srd = "yes"
+            self.__srd_valid = True
 
     @staticmethod
     def extract_hp(hp):
         if hp is None:
             return "", ""
         i = hp.find("(")
-        if i is not -1:
+        if i != -1:
             j = hp.find(")")
             hp_no_dice = hp[0:i]
-            HD = hp[i+1:j]
+            HD = hp[i + 1:j]
         else:
             hp_no_dice = ""
             HD = ""
@@ -182,7 +175,7 @@ class Monster (QObject):
         if score is None:
             return 0
         score = int(score)
-        mod = math.floor((score-10)/2)
+        mod = math.floor((score - 10) / 2)
         if sign:
             if mod > 0:
                 return "+" + str(mod)
@@ -199,6 +192,9 @@ class Monster (QObject):
     def _add_legendary(self, attr):
         legendary = self.Action(attr)
         self.legendary_list.append(legendary)
+
+    def is_srd_valid(self):
+        return self.__srd_valid
 
     def extract_spellbook(self):
         return_list = []
@@ -225,7 +221,7 @@ class Monster (QObject):
         self.source.append(source)
 
     def __str__(self):
-        return "Monster"
+        return self.name
 
 
 class Monster35(Monster):
@@ -241,10 +237,15 @@ class Monster35(Monster):
             elif attr.tag == "challenge_rating":
                 self.cr = re.sub("[^,;0-9/]+", "", attr.text)
             # elif attr.tag == "abilities":
-                # for ability in attr.text.split(", "):
-                #     temp = ability.split(" ")
-                #     setattr(self, temp[0].lower(), int(temp[1]))
+            # for ability in attr.text.split(", "):
+            #     temp = ability.split(" ")
+            #     setattr(self, temp[0].lower(), int(temp[1]))
             elif attr.tag == "initiative":
                 self.initiative = int(attr.text.split(" ")[0])
             else:
                 setattr(self, attr.tag, attr.text)
+
+
+class MonsterSW5e(Monster):
+    def is_srd_valid(self):
+        return True

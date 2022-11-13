@@ -1,6 +1,6 @@
 from .monster import MonsterSW5e, Monster
 from .item import ItemSW5e, Item
-from .spell import SpellSW5e, Spell
+from .spell import PowerSW5e, Spell
 from enum import Enum
 
 SW5e_plaintext = "SW5e"
@@ -22,7 +22,7 @@ class System(Enum):
 
     def get_system_classes(self):
         if self == System.SW5e:
-            return MonsterSW5e, ItemSW5e, SpellSW5e
+            return MonsterSW5e, ItemSW5e, PowerSW5e
         elif self == System.DnD5e:
             return Monster, Item, Spell
 
@@ -41,6 +41,15 @@ class System(Enum):
         elif s == DnD5e_plaintext:
             return System.DnD5e
         raise IOError
+
+    def system_flags(self):
+        flags = dict(
+            loot_widget=True
+        )
+        if self.is_SW5e():
+            flags["loot_widget"] = False
+        return flags
+
 
 
 

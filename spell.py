@@ -67,6 +67,9 @@ class Spell:
                 setattr(self, attr, getattr(entry, attr))
         self.append_classes(entry)
 
+    def handle_duplicate(self, existing_entry, resource):
+        existing_entry.append_spell(self)
+
 
 class Spell35(Spell):
     def __init__(self, entry, idx):
@@ -79,8 +82,17 @@ class Spell35(Spell):
                 setattr(self, attr.tag, attr.text)
 
 
-class SpellSW5e(Spell):
-    level = 0  # cantrips are not listed with levels, default is 0
+class PowerSW5e(Spell):
+    required_database_fields = ["name", "level", "alignment"]
+    level = "0"  # cantrips are not listed with levels, default is 0
+
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+        # super().__init__(entry, idx, srd_list)
+        # Names are given as "[Name] ([Alignment])" - and I wish to separate these two attributes.
+        # self.alignment = self.name[self.name.find("(") + 1:self.name.find(")")]
+        # self.name = self.name[:self.name.find("(")]
 
     def is_srd_valid(self):
         return True

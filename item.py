@@ -88,6 +88,9 @@ class Item:
     def append_source(self, source):
         self.source.append(source)
 
+    def handle_duplicate(self, existing_entry, resource):
+        existing_entry.append_source(resource)
+
 
 class Item35(Item):
     of_list = ['Scroll', 'Wand']
@@ -101,6 +104,14 @@ class Item35(Item):
             else:
                 setattr(self, attr.tag, attr.text)
 
+
 class ItemSW5e(Item):
+    def __init__(self, **kwargs):
+        for key, value in kwargs.items():
+            setattr(self, key, value)
+
     def value_conversion(self, value):
         return float(value)
+
+    def handle_duplicate(self, existing_entry, resource):
+        pass

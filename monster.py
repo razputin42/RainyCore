@@ -373,146 +373,146 @@ class Monster5e(Monster):
             return None
 
 
-class MonsterSW5e(Monster):
-    required_database_fields = [
-        'name', 'size', 'types', 'alignment', 'armorClass', 'hitPoints', 'speed', 'strength', 'strengthModifier',
-        'dexterity', 'dexterityModifier', 'constitution', 'constitutionModifier', 'intelligence',
-        'intelligenceModifier', 'wisdom', 'wisdomModifier', 'charisma', 'charismaModifier'
-    ]
-
-    class Behavior(BaseAction):
-        def __init__(self, **kwargs):
-            for key, value in kwargs.items():
-                setattr(self, key, value)
-
-        def get_name(self):
-            return self.name
-
-        def get_text(self):
-            return self.description
-
-        def is_attack(self):
-            return self.attackType == "MeleeWeapon"
-
-    def __init__(self, **kwargs):
-        for key, value in kwargs.items():
-            if key == "behaviors":
-                self.behaviors = [MonsterSW5e.Behavior(**behavior) for behavior in value]
-            else:
-                setattr(self, key, value)
-
-    def is_srd_valid(self):
-        return True
-
-    def get_actions(self):
-        return self.behaviors
-
-    def get_traits(self):
-        return []
-
-    def get_legendaries(self):
-        return []
-
-    def get_name(self):
-        return self.name
-
-    def get_size(self):
-        return self.size
-
-    def get_type(self):
-        return ", ".join(self.types)
-
-    def get_alignment(self):
-        return self.alignment
-
-    def get_ac(self):
-        return self.armorClass
-
-    def get_hp(self):
-        return self.hitPoints
-
-    def get_speed(self):
-        return self.speed
-
-    def get_str(self):
-        return self.strength
-
-    def get_str_modifier(self):
-        return self.strengthModifier
-
-    def get_dex(self):
-        return self.dexterity
-
-    def dex_modifier(self):
-        return self.dexterityModifier
-
-    def get_con(self):
-        return self.constitution
-
-    def get_con_modifier(self):
-        return self.constitutionModifier
-
-    def get_int(self):
-        return self.intelligence
-
-    def get_int_modifier(self):
-        return self.intelligenceModifier
-
-    def get_wis(self):
-        return self.wisdom
-
-    def get_wis_modifier(self):
-        return self.wisdomModifier
-
-    def get_cha(self):
-        return self.charisma
-
-    def get_cha_modifier(self):
-        return self.charismaModifier
-
-    def get_challenge_rating(self):
-        return self.challengeRating
-
-    def get_experience(self):
-        return self.experiencePoints
-
-    def get_saves(self):
-        if self._is_empty("savingThrows"):
-            return None
-        return ", ".join(self.savingThrows)
-
-    def get_resistances(self):
-        if self._is_empty("damageResistances"):
-            return None
-        return ", ".join(self.damageResistances)
-
-    def get_immunities(self):
-        if self._is_empty("damageImmunities"):
-            return None
-        return ", ".join(self.damageImmunities)
-
-    def get_condition_immunities(self):
-        if self._is_empty("conditionImmunities"):
-            return None
-        return ", ".join(self.conditionImmunities)
-
-    def get_skills(self):
-        if self._is_empty("skills"):
-            return None
-        return ", ".join(self.skills)
-
-    def get_senses(self):
-        if self._is_empty("senses"):
-            return None
-        return ", ".join(self.senses)
-
-    def get_languages(self):
-        if self._is_empty("languages"):
-            return None
-        return ", ".join(self.languages)
-
-    def _is_empty(self, key):
-        if not hasattr(self, key):
-            return None
-        value = getattr(self, key)
-        return value == ["-"] or value == [] or value is None
+# class MonsterSW5e(Monster):
+#     required_database_fields = [
+#         'name', 'size', 'types', 'alignment', 'armorClass', 'hitPoints', 'speed', 'strength', 'strengthModifier',
+#         'dexterity', 'dexterityModifier', 'constitution', 'constitutionModifier', 'intelligence',
+#         'intelligenceModifier', 'wisdom', 'wisdomModifier', 'charisma', 'charismaModifier'
+#     ]
+#
+#     class Behavior(BaseAction):
+#         def __init__(self, **kwargs):
+#             for key, value in kwargs.items():
+#                 setattr(self, key, value)
+#
+#         def get_name(self):
+#             return self.name
+#
+#         def get_text(self):
+#             return self.description
+#
+#         def is_attack(self):
+#             return self.attackType == "MeleeWeapon"
+#
+#     def __init__(self, **kwargs):
+#         for key, value in kwargs.items():
+#             if key == "behaviors":
+#                 self.behaviors = [MonsterSW5e.Behavior(**behavior) for behavior in value]
+#             else:
+#                 setattr(self, key, value)
+#
+#     def is_srd_valid(self):
+#         return True
+#
+#     def get_actions(self):
+#         return self.behaviors
+#
+#     def get_traits(self):
+#         return []
+#
+#     def get_legendaries(self):
+#         return []
+#
+#     def get_name(self):
+#         return self.name
+#
+#     def get_size(self):
+#         return self.size
+#
+#     def get_type(self):
+#         return ", ".join(self.types)
+#
+#     def get_alignment(self):
+#         return self.alignment
+#
+#     def get_ac(self):
+#         return self.armorClass
+#
+#     def get_hp(self):
+#         return self.hitPoints
+#
+#     def get_speed(self):
+#         return self.speed
+#
+#     def get_str(self):
+#         return self.strength
+#
+#     def get_str_modifier(self):
+#         return self.strengthModifier
+#
+#     def get_dex(self):
+#         return self.dexterity
+#
+#     def dex_modifier(self):
+#         return self.dexterityModifier
+#
+#     def get_con(self):
+#         return self.constitution
+#
+#     def get_con_modifier(self):
+#         return self.constitutionModifier
+#
+#     def get_int(self):
+#         return self.intelligence
+#
+#     def get_int_modifier(self):
+#         return self.intelligenceModifier
+#
+#     def get_wis(self):
+#         return self.wisdom
+#
+#     def get_wis_modifier(self):
+#         return self.wisdomModifier
+#
+#     def get_cha(self):
+#         return self.charisma
+#
+#     def get_cha_modifier(self):
+#         return self.charismaModifier
+#
+#     def get_challenge_rating(self):
+#         return self.challengeRating
+#
+#     def get_experience(self):
+#         return self.experiencePoints
+#
+#     def get_saves(self):
+#         if self._is_empty("savingThrows"):
+#             return None
+#         return ", ".join(self.savingThrows)
+#
+#     def get_resistances(self):
+#         if self._is_empty("damageResistances"):
+#             return None
+#         return ", ".join(self.damageResistances)
+#
+#     def get_immunities(self):
+#         if self._is_empty("damageImmunities"):
+#             return None
+#         return ", ".join(self.damageImmunities)
+#
+#     def get_condition_immunities(self):
+#         if self._is_empty("conditionImmunities"):
+#             return None
+#         return ", ".join(self.conditionImmunities)
+#
+#     def get_skills(self):
+#         if self._is_empty("skills"):
+#             return None
+#         return ", ".join(self.skills)
+#
+#     def get_senses(self):
+#         if self._is_empty("senses"):
+#             return None
+#         return ", ".join(self.senses)
+#
+#     def get_languages(self):
+#         if self._is_empty("languages"):
+#             return None
+#         return ", ".join(self.languages)
+#
+#     def _is_empty(self, key):
+#         if not hasattr(self, key):
+#             return None
+#         value = getattr(self, key)
+#         return value == ["-"] or value == [] or value is None

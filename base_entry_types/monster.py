@@ -1,4 +1,15 @@
+from ..listable_element import BaseListableEntry
+
+
 class BaseMonster:
+    class Behavior(BaseListableEntry):
+        def get_text(self):
+            raise NotImplementedError
+
+        @property
+        def is_attack(self):
+            return "attack" in self._attributes
+
     def get_challenge_rating(self):
         raise NotImplementedError
 
@@ -78,4 +89,13 @@ class BaseMonster:
         raise NotImplementedError
 
     def get_experience(self):
+        raise NotImplementedError
+
+    def get_behaviors(self):
+        raise NotImplementedError
+
+    def get_actions(self):
+        raise NotImplementedError
+
+    def get_legendary_actions(self):
         raise NotImplementedError

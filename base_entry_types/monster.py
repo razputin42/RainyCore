@@ -3,9 +3,6 @@ from ..listable_element import BaseListableEntry
 
 class BaseMonster:
     class Behavior(BaseListableEntry):
-        def get_text(self):
-            raise NotImplementedError
-
         @property
         def is_attack(self):
             return "attack" in self._attributes

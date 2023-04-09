@@ -10,5 +10,13 @@ class BaseListableEntry:
             raise AttributeError(f"No name attribute found in {self._attributes}!")
         return self._attributes["name"]
 
+    def get_description(self):
+        if "description" not in self._attributes:
+            raise AttributeError(f"No description attribute found in {self._attributes}!")
+        return self._attributes["description"]
+
     def get(self, key, default=None):
         return self._attributes.get(key, default)
+
+    def is_srd_valid(self):
+        return True

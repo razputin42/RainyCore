@@ -1,2 +1,2 @@
 from .power import BasePower
-from .monster import BaseMonster
+from .monster import BaseMonster, MonsterHTMLFormatDict

@@ -1,8 +1,14 @@
+from string import Template
+
+from ..base_entry_types import BaseMonster, MonsterHTMLFormatDict
 from ..listable_element import BaseListableEntry
-from ..base_entry_types import BaseMonster
 
 
 class MonsterSW5e(BaseListableEntry, BaseMonster):
+    class Behavior(BaseMonster.Behavior):
+        @property
+        def type(self):
+            return self.get("monsterBehaviorType", None)
     def get_size(self):
         return self.get("size", None)
 
@@ -99,5 +105,111 @@ class MonsterSW5e(BaseListableEntry, BaseMonster):
             yield MonsterSW5e.Behavior(**behavior)
 
     def get_legendary_actions(self):
-        for behavior in self.get("legendaryBehavior", []):
-            yield MonsterSW5e.Behavior(**behavior)
+        behaviors = self.get_behaviors()
+        return [behavior for behavior in behaviors if behavior.type == "Legendary"]
+
+    def get_traits(self):
+        behaviors = self.get_behaviors()
+        return [behavior for behavior in behaviors if behavior.type == "Trait"]
+
+    def get_actions(self):
+        behaviors = self.get_behaviors()
+        return [behavior for behavior in behaviors if behavior.type == "Action"]
+
+    def to_html(self):
+        if not self.is_srd_valid():
+            # What to display if entry is not SRD valid
+            template = Template(MonsterHTMLFormatDict["not_srd"])
+            return template.safe_substitute(
+                name=self.get_name()
+            )
+
+        # this is going to get confusing fast... This is everything before saving throws
+        template = Template(MonsterHTMLFormatDict['first'])
+        html = template.safe_substitute(
+            name=self.get_name(),
+            size=self.get_size(),
+            type=", ".join(self.get_type()),
+            alignment=self.get_alignment(),
+            armor_class=self.get_armor_class(),
+            hit_points=self.get_hit_points(),
+            speed=self.get_speed(),
+            str=self.get_strength(),
+            str_mod=self.get_strength_modifier(),
+            dex=self.get_dexterity(),
+            dex_mod=self.get_dexterity_modifier(),
+            con=self.get_constitution(),
+            con_mod=self.get_constitution_modifier(),
+            int=self.get_intelligence(),
+            int_mod=self.get_intelligence_modifier(),
+            wis=self.get_wisdom(),
+            wis_mod=self.get_wisdom_modifier(),
+            cha=self.get_charisma(),
+            cha_mod=self.get_charisma_modifier()
+        )
+        descriptive_list = [
+            ("Saving Throws", self.get_saving_throws()),
+            ("Damage Resistance", self.get_resistances()),
+            ("Damage Immunities", self.get_immunities()),
+            ("Condition Immunities", self.get_condition_immunities()),
+            ("Skills", self.get_skills()),
+            ("Senses", self.get_senses()),
+            ("Languages", self.get_languages()),
+        ]
+        for name, value in descriptive_list:
+            if value is None:
+                continue
+            if isinstance(value, list):
+                value = ", ".join(value)
+            template = Template(MonsterHTMLFormatDict['desc'])
+            html = html + template.safe_substitute(
+                name=name,
+                desc=value
+            )
+
+        template = Template(MonsterHTMLFormatDict['cr'])
+        html = html + template.safe_substitute(
+            cr=self.get_challenge_rating(),
+            xp=self.get_experience()
+        )
+        html = html + MonsterHTMLFormatDict['gradient']
+
+        # Add traits behaviors
+        for trait in self.get_traits():
+            template = Template(MonsterHTMLFormatDict['action_even'])
+            html = html + template.safe_substitute(
+                name=trait.get_name(),
+                text=trait.get_description().replace("\n", "<br/>")
+            )
+
+        # second part of the self
+        template = Template(MonsterHTMLFormatDict['second'])
+        html = html + template.safe_substitute()
+
+        # add attack behaviors action
+        for itt, action in enumerate(self.get_actions()):
+            if itt % 2 == 0:  # even
+                template = Template(MonsterHTMLFormatDict['action_even'])
+            else:
+                template = Template(MonsterHTMLFormatDict['action_odd'])
+            html = html + template.safe_substitute(
+                name=action.get_name(),
+                text=action.get_description()
+            )
+
+        # add each legendary action
+        legendary_actions = list(self.get_legendary_actions())
+        if len(legendary_actions) != 0:
+            html = html + MonsterHTMLFormatDict['legendary_header']
+        for itt, action in enumerate(legendary_actions):
+            if itt % 2 == 0:  # even
+                template = Template(MonsterHTMLFormatDict['action_even'])
+            else:
+                template = Template(MonsterHTMLFormatDict['action_odd'])
+            html = html + template.safe_substitute(
+                name=action.get_name(),
+                text=action.get_description()
+            )
+        template = Template(MonsterHTMLFormatDict['rest'])
+        html = html + template.safe_substitute()
+        return html

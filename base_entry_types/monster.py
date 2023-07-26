@@ -119,6 +119,22 @@ MonsterHTMLFormatDict = dict(
 
 class BaseMonster:
     class Behavior(BaseListableEntry):
+
+        @property
+        def attack_bonus(self):
+            raise NotImplementedError
+
+        @property
+        def description(self):
+            raise NotImplementedError
+
+        @property
+        def damage_dice(self):
+            raise NotImplementedError
+
+        def roll(self):
+            raise NotImplementedError
+
         @property
         def type(self):
             raise NotImplementedError
@@ -214,4 +230,7 @@ class BaseMonster:
         raise NotImplementedError
 
     def get_legendary_actions(self):
+        raise NotImplementedError
+
+    def perform_attack(self, attack):
         raise NotImplementedError

@@ -80,7 +80,7 @@ class Monster:
     def copy(self):
         return copy.deepcopy(self)
 
-    def performAttack(self, attack):
+    def perform_attack(self, attack):
         sNexus.attackSignal.emit(self.name, attack.attack)
 
     def append_source(self, source):

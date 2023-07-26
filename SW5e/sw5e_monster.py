@@ -1,14 +1,47 @@
+import logging
 from string import Template
 
 from ..base_entry_types import BaseMonster, MonsterHTMLFormatDict
 from ..listable_element import BaseListableEntry
 
+from ..signals import sNexus
+
+from ..dice import dice
+
 
 class MonsterSW5e(BaseListableEntry, BaseMonster):
     class Behavior(BaseMonster.Behavior):
         @property
+        def attack_bonus(self):
+            return self.get("attackBonus", None)
+
+        @property
+        def damage_dice(self):
+            return self.get("damageRoll", None)
+
+        @property
+        def description(self):
+            return self.get("description", None)
+
+        def roll(self):
+            to_hit = None
+            if self.attack_bonus is not None:
+                to_hit, _ = dice("d20")
+                to_hit += self.attack_bonus
+            logging.debug(f"Rolled {to_hit} to hit")
+            damage_dice = self.damage_dice.strip().lower()
+            damage = 0
+            for damage_die in damage_dice.split("+"):
+                rolled, _ = dice(damage_die)
+                damage += rolled
+            logging.debug(f"Rolled {damage} damage")
+            return to_hit, damage
+
+        @property
         def type(self):
             return self.get("monsterBehaviorType", None)
+
+
     def get_size(self):
         return self.get("size", None)
 
@@ -115,6 +148,10 @@ class MonsterSW5e(BaseListableEntry, BaseMonster):
     def get_actions(self):
         behaviors = self.get_behaviors()
         return [behavior for behavior in behaviors if behavior.type == "Action"]
+
+    def perform_attack(self, attack):
+        logging.debug(f"Performing attack {attack.get_name()}, {attack.get_description()}")
+        sNexus.attackSignal.emit(self, attack)
 
     def to_html(self):
         if not self.is_srd_valid():

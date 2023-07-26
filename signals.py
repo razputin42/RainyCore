@@ -1,9 +1,11 @@
 from PyQt5.QtCore import pyqtSignal, QObject
 
+from RainyCore import BaseMonster
+
 
 class SignalNexus(QObject):
     # General signals
-    attackSignal = pyqtSignal(str, str, name="attackSignal")
+    attackSignal = pyqtSignal(BaseMonster, BaseMonster.Behavior, name="attackSignal")
     printSignal = pyqtSignal(str, name="printSignal")
     setWidgetStretch = pyqtSignal(int, int, name="setWidgetStretch")
 

@@ -1,12 +1,11 @@
 import logging
+import re
 from string import Template
 
 from ..base_entry_types import BaseMonster, MonsterHTMLFormatDict
-from ..listable_element import BaseListableEntry
-
-from ..signals import sNexus
-
 from ..dice import dice
+from ..listable_element import BaseListableEntry
+from ..signals import sNexus
 
 
 class MonsterSW5e(BaseListableEntry, BaseMonster):
@@ -40,6 +39,16 @@ class MonsterSW5e(BaseListableEntry, BaseMonster):
         @property
         def type(self):
             return self.get("monsterBehaviorType", None)
+
+    def __init__(self, **kwargs):
+        super().__init__(**kwargs)
+        updated_types = []
+        for type in self.get_type():
+            updated_types.append(type.capitalize())
+        self._attributes["types"] = updated_types
+
+        if self.get_challenge_rating() == "CR":  # broken entry
+            self._attributes["challengeRating"] = "-1"
 
 
     def get_size(self):
@@ -127,7 +136,7 @@ class MonsterSW5e(BaseListableEntry, BaseMonster):
         return self.get("experiencePoints", None)
 
     def get_challenge_rating(self):
-        return self.get("challengeRating", "-1")
+        return self.get("challengeRating")
 
     def get_behaviors(self):
         for behavior in self.get("behaviors", []):

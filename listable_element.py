@@ -42,3 +42,6 @@ class BaseListableEntry:
 
     def to_html(self):
         raise NotImplementedError
+
+    def matches(self, **attribute_requirements):
+        raise NotImplementedError

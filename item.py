@@ -91,6 +91,12 @@ class Item:
     def handle_duplicate(self, existing_entry, resource):
         existing_entry.append_source(resource)
 
+    def get_name(self):
+        return self.name
+
+    def get_type(self):
+        return self.type
+
 
 class Item35(Item):
     of_list = ['Scroll', 'Wand']
@@ -103,15 +109,3 @@ class Item35(Item):
                 self.name = attr.text + ' of ' + self.name
             else:
                 setattr(self, attr.tag, attr.text)
-
-
-class ItemSW5e(Item):
-    def __init__(self, **kwargs):
-        for key, value in kwargs.items():
-            setattr(self, key, value)
-
-    def value_conversion(self, value):
-        return float(value)
-
-    def handle_duplicate(self, existing_entry, resource):
-        pass
